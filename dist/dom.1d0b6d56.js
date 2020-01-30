@@ -120,8 +120,10 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 })({"dom.js":[function(require,module,exports) {
 window.dom = {
   create: function create(string) {
-    var container = document.createElement("template");
-    container.innerHTML = string.trim();
+    var container = document.createElement("template"); //任意元素
+
+    container.innerHTML = string.trim(); //避免前面空格
+
     return container.content.firstChild;
   },
   after: function after(node, node2) {
@@ -185,9 +187,93 @@ window.dom = {
     } else if (arguments.length === 1) {
       return node.innerHTML;
     }
+  },
+  style: function style(node, name, value) {
+    if (arguments.length === 3) {
+      // dom.style(div, 'color', 'red')
+      node.style[name] = value;
+    } else if (arguments.length === 2) {
+      if (typeof name === "string") {
+        // dom.style(div, 'color')
+        return node.style[name];
+      } else if (name instanceof Object) {
+        // dom.style(div, {color: 'red'})
+        var object = name;
+
+        for (var key in object) {
+          node.style[key] = object[key];
+        }
+      }
+    }
+  },
+  class: {
+    add: function add(node, className) {
+      node.classList.add(className);
+    },
+    remove: function remove(node, className) {
+      node.classList.remove(className);
+    },
+    has: function has(node, className) {
+      return node.classList.contains(className);
+    }
+  },
+  on: function on(node, eventName, fn) {
+    node.addEventListener(eventName, fn);
+  },
+  off: function off(node, eventName, fn) {
+    node.removeEventListener(eventName, fn);
+  },
+  find: function find(selector, scope) {
+    return (scope || document).querySelectorAll(selector);
+  },
+  parent: function parent(node) {
+    return node.children;
+  },
+  children: function children(node) {
+    return node.children;
+  },
+  siblings: function siblings(node) {
+    return Array.from(node.parentNode.children).filter(function (n) {
+      return n !== node;
+    });
+  },
+  next: function next(node) {
+    var x = node.nextSibling;
+
+    while (x && x.nodeType === 3) {
+      x = x.nextSibling;
+    }
+
+    return x;
+  },
+  previous: function previous(node) {
+    var x = node.previousSibling;
+
+    while (x && x.nodeType === 3) {
+      x = x.previousSibling;
+    }
+
+    return x;
+  },
+  each: function each(nodeList, fn) {
+    for (var i = 0; i < nodeList.length; i++) {
+      fn.call(null, nodeList[i]);
+    }
+  },
+  index: function index(node) {
+    var list = dom.children(node.parentNode);
+    var i;
+
+    for (i = 0; i < list.length; i++) {
+      if (list[i] === node) {
+        break;
+      }
+    }
+
+    return i;
   }
 };
-},{}],"C:/Users/payne/AppData/Local/Yarn/Data/global/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{}],"../../../../.config/yarn/global/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -215,7 +301,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50435" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51044" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -391,5 +477,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["C:/Users/payne/AppData/Local/Yarn/Data/global/node_modules/parcel/src/builtins/hmr-runtime.js","dom.js"], null)
+},{}]},{},["../../../../.config/yarn/global/node_modules/parcel/src/builtins/hmr-runtime.js","dom.js"], null)
 //# sourceMappingURL=/dom.1d0b6d56.js.map
